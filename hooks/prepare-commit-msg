@@ -1,0 +1,50 @@
+#!/bin/bash
+#
+# The prepare-commit-msg hook is called with the name of the file that contains
+# the commit message. 
+#
+# An example hook script to prepare the commit log message.
+# Called by "git commit" with the name of the file that has the
+# commit message, followed by the description of the commit
+# message's source.  The hook's purpose is to edit the commit
+# message file.  If the hook fails with a non-zero status,
+# the commit is aborted.
+#
+# To enable this hook, rename this file to "prepare-commit-msg".
+
+# The second example adds a Signed-off-by line to the message, that can
+# still be edited.  This is rarely a good idea.
+nm=$(basename "$0")
+
+echo "[$nm] args: $@"
+MSG=$1
+shift
+
+$SVN diff $@ | diffstat > $MSG	# Preparing commit message - POINT OF VARIABILITY!
+
+# This adds a Signed-off-by line to the message. It's an ugly hack
+# that looks into ~/.subversion/auth/svn.simple to locate the username
+# section of the file that contains the name of the current repo. This
+# is so far the "easiest" way to find the author.
+REPO=$(svn info |grep ^URL | sed -e 's|URL: .*\://\([^/]*\).*|\1|')
+f=$(find ~/.subversion/auth/svn.simple -type f -exec grep -l "$REPO" {} \;)
+SOB=$(grep -A 2 "username" $f | tail -n1)
+echo -e "\n Signed-off-by: $SOB" >> $MSG
+
+# Alternatively, if username == `whoami`, do this:
+# echo " Signed-off-by: $(whoami)"
+
+#case "$2,$3" in
+#  merge,)
+#    /usr/bin/perl -i.bak -ne 's/^/# /, s/^# #/#/ if /^Conflicts/ .. /#/; print' "$1" ;;
+
+# ,|template,)
+#   /usr/bin/perl -i.bak -pe '
+#      print "\n" . `git diff --cached --name-status -r`
+#	 if /^#/ && $first++ == 0' "$1" ;;
+
+#  *) ;;
+#esac
+
+# SOB=$(git var GIT_AUTHOR_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
+# grep -qs "^$SOB" "$1" || echo "$SOB" >> "$1"
