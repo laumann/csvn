@@ -1,36 +1,58 @@
 #!/bin/bash
 #
 # The prepare-commit-msg hook is called with the name of the file that contains
-# the commit message. 
+# the commit message plus the argument list supplied to csvn.
+#
+# For instance: Say the commit message file is called "msg" and the
+# user executed "./csvn.sh commit a b c", prepare-commit-msg is called thusly:
+#
+#   hooks/prepare-commit-msg msg a b c
 #
 # An example hook script to prepare the commit log message.
-# Called by "git commit" with the name of the file that has the
+# Called by csvn with the name of the file that has the
 # commit message, followed by the description of the commit
 # message's source.  The hook's purpose is to edit the commit
 # message file.  If the hook fails with a non-zero status,
 # the commit is aborted.
 #
 # To enable this hook, rename this file to "prepare-commit-msg".
+#
+# The variable SVN is set to the real svn program, and can be used as
+# such (this is inherited from csvn.sh).
 
 # The second example adds a Signed-off-by line to the message, that can
-# still be edited.  This is rarely a good idea.
-
-echo "SVN=$SVN"
-
-#$SVN diff $@ | diffstat > $1	# Preparing commit message - POINT OF VARIABILITY!
+# still be edited.
 
 
-#case "$2,$3" in
-#  merge,)
-#    /usr/bin/perl -i.bak -ne 's/^/# /, s/^# #/#/ if /^Conflicts/ .. /#/; print' "$1" ;;
+# Shift off the commit message file
+MSG=$1
+shift
 
-# ,|template,)
-#   /usr/bin/perl -i.bak -pe '
-#      print "\n" . `git diff --cached --name-status -r`
-#	 if /^#/ && $first++ == 0' "$1" ;;
+# Nice diffstat in commit message
+DIFF=$($SVN diff $@)
+ERR=$?
+if test ! $ERR -eq 0; then
+    echo
+    echo "Hmmm... Something went wrong executing subversion. Here are"
+    echo "the variables involved. Check them to make sure they are in"
+    echo "order:"
+    echo
+    echo "  SVN=$SVN"
+    echo "  MSG=$MSG"
+    echo
+    exit $ERR;
+fi
+echo $DIFF | diffstat >> $MSG
 
-#  *) ;;
-#esac
+# This adds a Signed-off-by line to the message. It's an ugly hack
+# that looks into ~/.subversion/auth/svn.simple to locate the username
+# section of the file that contains the name of the current repo. This
+# is so far the "easiest" way to find the author.
+REPO=$($SVN info |grep ^URL | sed -e 's|URL: .*\://\([^/]*\).*|\1|')
+f=$(find ~/.subversion/auth/svn.simple -type f -exec grep -l "$REPO" {} \;)
+SOB=$(grep -A 2 "username" $f | tail -n1)
+echo -e "\n Signed-off-by: $SOB" >> $MSG
 
-# SOB=$(git var GIT_AUTHOR_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
-# grep -qs "^$SOB" "$1" || echo "$SOB" >> "$1"
+# Alternatively, if username == `whoami`, do this:
+# echo " Signed-off-by: $(whoami)" >> MSG
+

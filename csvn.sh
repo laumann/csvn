@@ -26,6 +26,9 @@ helper() {
 # User didn't supply any arguments? Help them!
 if test $# -eq 0; then helper; exit; fi
 
+# failed is non-zero exit status
+die_if_failed() { if test ! $1 -eq 0; then exit 1; fi }
+
 # Look at svn arguments
 dosvn() {
     case "$1" in
@@ -37,7 +40,7 @@ dosvn() {
 	    if test -f "$CSVNROOT/hooks/pre-commit"; then
 		echo "yes"
 		$CSVNROOT/hooks/pre-commit
-		if test ! $? -eq 0; then exit 1; fi
+		die_if_failed $?
 	    else
 		echo "no"
 	    fi
@@ -49,16 +52,7 @@ dosvn() {
 	    if test -f "$CSVNROOT/hooks/prepare-commit-msg"; then
 		echo "yes"
 		$CSVNROOT/hooks/prepare-commit-msg $TMP $@
-		if test ! $? -eq 0; then exit 1; else echo "Not exiting"; fi
-	    else
-		echo "no"
-	    fi
-
-	    # Check commit message
-	    echo -n "[$CSVN] commit-msg... "
-	    if test -f "$CSVROOT/hooks/commit-msg"; then
-		echo "yes"
-		$CSVNROOT/hooks/commit-msg $TMP
+		die_if_failed $?
 	    else
 		echo "no"
 	    fi

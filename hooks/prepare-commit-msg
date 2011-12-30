@@ -29,9 +29,8 @@ MSG=$1
 shift
 
 # Nice diffstat in commit message
-DIFF=$($SVN diff $@)
-ERR=$?
-if test ! $ERR -eq 0; then
+OUTPUT=$($SVN diff $@ 2>&1)
+if test ! $? -eq 0; then
     echo
     echo "Hmmm... Something went wrong executing subversion. Here are"
     echo "the variables involved. Check them to make sure they are in"
@@ -40,18 +39,22 @@ if test ! $ERR -eq 0; then
     echo "  SVN=$SVN"
     echo "  MSG=$MSG"
     echo
-    exit $ERR;
+    echo "The output from subversion (if any) was:"
+    echo
+    echo "  $OUTPUT"
+    echo
+    exit 1;
 fi
-echo $DIFF | diffstat >> $MSG
+echo "$OUTPUT" | diffstat >> $MSG
 
 # This adds a Signed-off-by line to the message. It's an ugly hack
 # that looks into ~/.subversion/auth/svn.simple to locate the username
 # section of the file that contains the name of the current repo. This
 # is so far the "easiest" way to find the author.
-REPO=$(svn info |grep ^URL | sed -e 's|URL: .*\://\([^/]*\).*|\1|')
+REPO=$($SVN info |grep ^URL | sed -e 's|URL: .*\://\([^/]*\).*|\1|')
 f=$(find ~/.subversion/auth/svn.simple -type f -exec grep -l "$REPO" {} \;)
 SOB=$(grep -A 2 "username" $f | tail -n1)
-echo -e "\n Signed-off-by: $SOB" >> $MSG
+echo -e "\nSigned-off-by: $SOB" >> $MSG
 
 # Alternatively, if username == `whoami`, do this:
 # echo " Signed-off-by: $(whoami)" >> MSG
