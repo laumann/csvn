@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "Post commit in effect - one could perhaps send an e-mail"
+echo "or make a note of $(date)"

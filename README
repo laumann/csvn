@@ -1,0 +1,29 @@
+csvn
+====
+
+Client side SVN (csvn) aims to bring some customizability of Subversion
+to the client-side user experience.
+
+From csvn's usage string:
+
+    Client side Subversion sucks - there is very little
+    customisability, which completely ruins the experience for a lot
+    of users. This bundle of scripts wraps around the svn command line
+    tool to provide the extra functionality that YOU want.
+
+The idea is specifically to allow the user to seamlessly use _csvn_
+instead of _svn_, but expand upon the control the user has.
+
+One example is hooks - the server side can set up hooks for various
+things, while the client side has no such support. csvn mimics git in
+allowing certain - if present under the right name - to be called, and
+have the user execute some of their chosen code. At the moment, the
+following commit hooks exist:
+
+ - pre-commit: To check the validity of something before beginning the
+   commit
+ - prepare-commit-msg: Dedicated to preparing the commit message, for
+   instance inject certain information into the commit message
+   template.
+ - commit-msg: Used to check the commit message, once it has been
+   saved (and the commit is about to begin)

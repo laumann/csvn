@@ -3,7 +3,6 @@
 # $2 is the name of the temporary svn commit message file (created by svn)
 
 TMP=`mktemp`
-nm=$(basename "$0")
 
 # backup original text
 tail -n+2 $2 > $TMP
@@ -19,7 +18,7 @@ rm $TMP
 vim $2 # TODO: Allow variable editor
 
 # Check commit message
-echo -n "[$nm] commit-msg... "
+echo -n "[$CSVN] commit-msg... "
 if test -f "$CSVNROOT/hooks/commit-msg"; then
     echo "yes"
     $CSVNROOT/hooks/commit-msg $2

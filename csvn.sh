@@ -2,7 +2,7 @@
 
 export SVN=/usr/bin/svn
 export CSVNROOT=$(dirname "$0")
-CSVN=$(basename "$0")
+export CSVN=$(basename "$0")
 
 # Help function
 helper() {
@@ -59,6 +59,16 @@ dosvn() {
 
 	    # Commit
 	    $SVN commit $@ --editor-cmd="$CSVNROOT/util/svn-editor.sh $TMP"
+
+	    # Post commit
+	    echo -n "[$CSVN] post-commit... "
+	    if test $? -eq 0 -a -f "$CSVNROOT/hooks/post-commit"; then
+		echo "yes"
+		$CSVNROOT/hooks/post-commit
+	    else
+		echo "no"
+	    fi
+
 	    rm $TMP
 	    ;;
 	--svn)
@@ -85,3 +95,4 @@ dosvn $@
 
 unset SVN
 unset CSVNROOT
+unset CSVN
