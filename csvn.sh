@@ -37,7 +37,7 @@ dosvn() {
 	    if test -f "$CSVNROOT/hooks/pre-commit"; then
 		echo "yes"
 		$CSVNROOT/hooks/pre-commit
-		if test ! $? -eq 0; then exit $?; fi
+		if test ! $? -eq 0; then exit 1; fi
 	    else
 		echo "no"
 	    fi
@@ -49,6 +49,7 @@ dosvn() {
 	    if test -f "$CSVNROOT/hooks/prepare-commit-msg"; then
 		echo "yes"
 		$CSVNROOT/hooks/prepare-commit-msg $TMP $@
+		if test ! $? -eq 0; then exit 1; else echo "Not exiting"; fi
 	    else
 		echo "no"
 	    fi
