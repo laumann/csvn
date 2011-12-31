@@ -75,9 +75,6 @@ while test "${1+isset}"; do
 	    csvn_opts_on=true
 	    ;;
 	--)
-	    test $csvn_opts_on && {
-		echo "'--' needlessly specified."
-	    }
 	    shift
 	    break
 	    ;;
