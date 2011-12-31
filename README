@@ -4,6 +4,9 @@ csvn
 Client side SVN (csvn) aims to bring some customizability of Subversion
 to the client-side user experience.
 
+About
+-----
+
 From csvn's usage string:
 
     Client side Subversion sucks - there is very little
@@ -27,3 +30,12 @@ following commit hooks exist:
    template.
  - commit-msg: Used to check the commit message, once it has been
    saved (and the commit is about to begin)
+ - post-commit: Called when a succesful commit has been made.
+
+
+License
+-------
+
+This software is released under the GNU General Public License (GPL)
+version 3. See the file GPLv3 that you should have received bundled
+with this software.

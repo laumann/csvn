@@ -1,0 +1,18 @@
+TODO:
+ - Implement more specialised command line arguments:
+   
+   csvn [options]
+
+   csvn [<svn options>]
+   csvn [<csvn options>]
+   csvn [<csvn options> '--' <svn options>]
+
+   Meaning: either ALL options are for svn OR ALL options are for csvn
+   OR csvn options come before svn options and they are separated by
+   '--' (double dash).
+
+   As csvn has less options than svn, it first checks for csvn options
+   and, if found, looks for the separating double dash (--); if this
+   isn't found it is assumed all options are for csvn. If the first
+   options fail to identify as csvn options, they are assumed to be
+   svn options.
