@@ -18,3 +18,8 @@ TODO:
    svn options.
 
  - FIXME: Pass arguments to Subversion, preserving the quotes
+
+ - commit: treat -m, -F and no message differently
+   Dream: to be able to specify whether or not the
+   'prepare-commit-msg' hook should be allowed to run, even when -m or
+   -F have been specified.

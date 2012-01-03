@@ -17,7 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# To contact the author by e-mail: laumann.thomas@gmail.com
+# To contact the author by e-mail:
+#    laumann.thomas@gmail.com
 #
 # To contact the author by paper mail:
 #    Thomas Bracht Laumann Jespersen
@@ -30,11 +31,12 @@ export SVN=${SVN:-/usr/bin/svn}
 export CSVNROOT=$(dirname "$0")
 export CSVN=$(basename "$0")
 
-# External files
-source $CSVNROOT/util/helper.sh
+# Source lib directory
+for f in $(ls lib/*.sh); do source "$CSVNROOT/$f" \
+    || { die "Error sourcing $CSVNROOT/$f"; }; done
 
 # User didn't supply any arguments? Help them!
-if test $# -eq 0; then helper; exit; fi
+test ! $# -eq 0 || { usage; exit 0; }
 
 # First, look for csvn options - these are few.
 # When adding more options to csvn, make to that it sets csvn_opts_on
@@ -59,15 +61,13 @@ while test "${1+isset}"; do
 	    break
 	    ;;
 	--help|-h|help)
-	    helper
-	    exit 1
+	    usage
+	    exit 0
 	    ;;
 	*)
-	    if $csvn_opts_on; then
-		echo "$1 not recognised as a csvn option. Perhaps you forgot the"
-		echo "double dash (--) to separate csvn and svn options?"
-		echo
-		exit 1
+	    if $csvn_opts_on; then die -e \
+		"$1 not recognised as a csvn option. Perhaps you forgot the"\
+		"\ndouble dash (--) to separate csvn and svn options?\n"
 	    fi
 	    break
 	    ;;
@@ -85,16 +85,7 @@ dosvn() {
 		$CSVNROOT/hooks/pre-commit || exit 1
 	    fi
 
-	    TMP=`mktemp`
-
-	    # Prepare commit message
-	    if test -f "$CSVNROOT/hooks/prepare-commit-msg"; then
-		$CSVNROOT/hooks/prepare-commit-msg $TMP $@ || exit 1
-	    fi
-
-	    # Commit
-	    # echo "$SVN" commit $ARGS --editor-cmd="$CSVNROOT"/util/svn-editor.sh "$TMP" "$@"
-	    $SVN commit "$@" --editor-cmd="$CSVNROOT/util/svn-editor.sh $TMP $@"
+	    docommit "$@"
 
 	    # Post commit
 	    if test $? -eq 0 -a -f "$CSVNROOT/hooks/post-commit"; then

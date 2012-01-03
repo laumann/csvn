@@ -26,8 +26,8 @@
 #    Denmark
 #
 
-# Help function
-helper() {
+# Print usage information
+usage() {
     echo "$CSVN - wrapper program to provide extra nifty features for client side"
     echo "          subversion usage."
     echo
