@@ -45,14 +45,9 @@
 
 # exec git diff-index --check --cached $against --
 
-echo "This is an example pre-commit script that is set to fail. The "
-echo "script is called by csvn without any arguments and should exit"
-echo "with a non-zero status, if it wishes to abort the commit."
 echo
-echo "Also make sure, in the case of failure, to supply an appropriate"
-echo "error message to the user."
+echo "    Serious error."
+echo "    All shortcuts have disappeared."
+echo "    Screen. Mind. Both are blank."
 echo
-echo "Exiting with status code 1."
 exit 1
-
-

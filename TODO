@@ -16,3 +16,5 @@ TODO:
    isn't found it is assumed all options are for csvn. If the first
    options fail to identify as csvn options, they are assumed to be
    svn options.
+
+ - FIXME: Pass arguments to Subversion, preserving the quotes

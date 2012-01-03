@@ -1,0 +1,8 @@
+INSTALLATION
+
+Place the csvn directory at a desired top level location, and put an alias in
+your .bashrc (or appropriate rc file).
+
+	alias csvn=/path/to/csvn/csvn.sh
+
+and you're done!

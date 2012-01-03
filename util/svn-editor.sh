@@ -4,6 +4,8 @@
 
 TMP=`mktemp`
 
+echo "$@"
+
 # backup original text
 tail -n+2 $2 > $TMP
 

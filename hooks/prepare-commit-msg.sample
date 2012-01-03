@@ -25,11 +25,14 @@
 
 
 # Shift off the commit message file
-MSG=$1
+MSG="$1"
 shift
 
+# NOTE: diff is not compatible with commit arguments, except filenames.
+#       any options supplied to commit should be weeded out here...
+
 # Nice diffstat in commit message
-DIFF=$($SVN diff $@)
+DIFF=$($SVN diff "$@")
 ERR=$?
 if test ! $ERR -eq 0; then
     echo

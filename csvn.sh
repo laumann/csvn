@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # csvn - wrapper program to provide extra nifty features for client
 #        side subversion usage.
 #
@@ -31,24 +30,8 @@ export SVN=${SVN:-/usr/bin/svn}
 export CSVNROOT=$(dirname "$0")
 export CSVN=$(basename "$0")
 
-# Help function
-helper() {
-    echo "$CSVN - wrapper program to provide extra nifty features for client side"
-    echo "          subversion usage."
-    echo
-    echo "Usage:  $CSVN [normal svn options]"
-    echo "        $CSVN [--svn /path/to/svn] -- [normal svn options]"
-    echo "        $CSVN [-h|--help]"
-    echo "        $CSVN [-v|--version]"
-    echo
-    echo " Client side Subversion sucks - there is very little customisability, which"
-    echo " completely ruins the experience for a lot of users. This bundle of scripts wraps"
-    echo " around the svn command line tool to provide the extra functionality that YOU want."
-    echo 
-    echo " Common commands:"
-    echo "  -h, --help     Display this help information and exit."
-    echo "  -v, --version  Print the version number and exit."
-}
+# External files
+source $CSVNROOT/util/helper.sh
 
 # User didn't supply any arguments? Help them!
 if test $# -eq 0; then helper; exit; fi
@@ -65,10 +48,7 @@ while test "${1+isset}"; do
 		echo "--svn requires a path argument"
 		exit 1
 	    }
-	    test -x "$2" || {
-		echo "$2 doesn't appear to be an executable..."
-		exit 1
-	    }
+	    # TODO: Test that $2 is executable
 	    SVN="$2"
 	    shift
 	    shift
@@ -80,7 +60,6 @@ while test "${1+isset}"; do
 	    ;;
 	--help|-h|help)
 	    helper
-	    shift
 	    exit 1
 	    ;;
 	*)
@@ -114,7 +93,8 @@ dosvn() {
 	    fi
 
 	    # Commit
-	    $SVN commit $@ --editor-cmd="$CSVNROOT/util/svn-editor.sh $TMP"
+	    # echo "$SVN" commit $ARGS --editor-cmd="$CSVNROOT"/util/svn-editor.sh "$TMP" "$@"
+	    $SVN commit "$@" --editor-cmd="$CSVNROOT/util/svn-editor.sh $TMP $@"
 
 	    # Post commit
 	    if test $? -eq 0 -a -f "$CSVNROOT/hooks/post-commit"; then
@@ -124,12 +104,12 @@ dosvn() {
 	    rm $TMP
 	    ;;
 	*)
-	    $SVN $@
+	    $SVN "$@"
 	    ;;
     esac
 }
 
-dosvn $@
+dosvn "$@"
 
 unset SVN
 unset CSVNROOT
