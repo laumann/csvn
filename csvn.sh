@@ -33,7 +33,7 @@ export CSVN=$(basename "$0")
 
 # Source lib directory
 for f in $(ls $CSVNROOT/lib/*.sh); do source "$f" \
-    || { die "Error sourcing $CSVNROOT/$f"; }; done
+    || { die "Error sourcing $f"; }; done
 
 # User didn't supply any arguments? Help them!
 test ! $# -eq 0 || { usage; exit 0; }
