@@ -32,7 +32,7 @@ export CSVNROOT=$(dirname "$0")
 export CSVN=$(basename "$0")
 
 # Source lib directory
-for f in $(ls lib/*.sh); do source "$CSVNROOT/$f" \
+for f in $(ls $CSVNROOT/lib/*.sh); do source "$f" \
     || { die "Error sourcing $CSVNROOT/$f"; }; done
 
 # User didn't supply any arguments? Help them!
