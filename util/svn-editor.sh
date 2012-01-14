@@ -20,11 +20,7 @@ rm $TMP
 vim $2 # TODO: Allow variable editor
 
 # Check commit message
-echo -n "[$CSVN] commit-msg... "
 if test -f "$CSVNROOT/hooks/commit-msg"; then
-    echo "yes"
     $CSVNROOT/hooks/commit-msg $2
-    if ! test $? -eq 0; then exit 1; fi
-else
-    echo "no"
+    test ! $? -eq 0 || die
 fi

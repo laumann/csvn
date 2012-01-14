@@ -57,10 +57,10 @@ docommit() {
     TMP=`mktemp`
 
     if test -f "$CSVNROOT/hooks/prepare-commit-msg"; then
-	$CSVNROOT/hooks/prepare-commit-msg "$TMP" "${nargs[*]}" || die "prepare-commit-msg failed"
+	$CSVNROOT/hooks/prepare-commit-msg "$TMP" ${nargs[*]} || die "prepare-commit-msg failed"
     fi
 
     # -m nor -F is set - invoke editor
     # echo "$SVN ${ARGS[*]} --editor-cmd=\"$CSVNROOT/util/svn-editor.sh $TMP ${nargs[*]}\""
-    eval "$SVN commit ${ARGS[*]} --editor-cmd=\"$CSVNROOT/util/svn-editor.sh $TMP ${nargs[*]}\""
+    eval "$SVN commit ${ARGS[*]} --editor-cmd=\"$CSVNROOT/util/svn-editor.sh $TMP \""
 }
