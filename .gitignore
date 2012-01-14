@@ -1,0 +1,5 @@
+hooks/commit-msg
+hooks/post-commit
+hooks/pre-commit
+hooks/prepare-commit-msg
+*~
