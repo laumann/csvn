@@ -31,6 +31,10 @@ export SVN=${SVN:-/usr/bin/svn}
 export CSVNROOT=$(dirname "$0")
 export CSVN=$(basename "$0")
 
+MAJOR=0
+MINOR=1
+REV=2
+
 # Source lib directory
 for f in $(ls $CSVNROOT/lib/*.sh); do source "$f" \
     || { die "Error sourcing $f"; }; done
@@ -46,10 +50,7 @@ csvn_opts_on=false
 while test "${1+isset}"; do
     case "$1" in
 	--svn)
-	    test ! "${2+isset}" -o "$2" = "--" && {
-		echo "--svn requires a path argument"
-		exit 1
-	    }
+	    test ! "${2+isset}" -o "$2" = "--" && die "--svn requires a path argument"
 	    # TODO: Test that $2 is executable
 	    SVN="$2"
 	    shift
@@ -62,6 +63,10 @@ while test "${1+isset}"; do
 	    ;;
 	--help|-h|help)
 	    usage
+	    exit 0
+	    ;;
+	-v|--version)
+	    echo "$CSVN $MAJOR.$MINOR.$REV"
 	    exit 0
 	    ;;
 	*)
@@ -82,7 +87,7 @@ dosvn() {
 
 	    # Pre-commit
 	    if test -f "$CSVNROOT/hooks/pre-commit"; then
-		$CSVNROOT/hooks/pre-commit || exit 1
+		$CSVNROOT/hooks/pre-commit || die
 	    fi
 
 	    docommit "$@"
@@ -93,6 +98,9 @@ dosvn() {
 	    fi
 
 	    rm $TMP
+	    ;;
+	diff|di)
+	    $SVN "$@" |less -FX
 	    ;;
 	*)
 	    $SVN "$@"

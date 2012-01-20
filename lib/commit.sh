@@ -44,9 +44,10 @@ docommit() {
 	esac
     done
 
-    echo "Length: ${#nargs[*]}"
-    echo "Result: ${nargs[*]}"
-    echo "ARGS:   ${ARGS[*]}"
+    # Good for debugging
+    # echo "Length: ${#nargs[*]}"
+    # echo "Result: ${nargs[*]}"
+    # echo "ARGS:   ${ARGS[*]}"
 
     if $m || $F; then
 	eval "$SVN commit ${ARGS[*]}"
