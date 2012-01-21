@@ -52,12 +52,10 @@ while test "${1+isset}"; do
 	--svn=*)
 	    SVN=$(echo "$1" | sed -n 's/^--svn=\(..*\)$/\1/p')
 
-	    test ! -z "$SVN" || die "--svn requires a path argument"
-
-	    #TODO: Test that $2 is executable
-
+	    test ! -z "$SVN" || die -e "--svn requires a path argument\n"
+	    
 	    csvn_opts_on=true
-	    exit
+	    shift
 	    ;;
 	--)
 	    shift
