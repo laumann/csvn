@@ -31,16 +31,15 @@ usage() {
     echo "$CSVN - wrapper program to provide extra nifty features for client side"
     echo "          subversion usage."
     echo
-    echo "Usage:  $CSVN [normal svn options]"
-    echo "        $CSVN [--svn /path/to/svn] -- [normal svn options]"
-    echo "        $CSVN [-h|--help]"
+    echo "Usage:  $CSVN [<csvn options> --] <svn command>"
     echo "        $CSVN [-v|--version]"
+    echo "        $CSVN [-h|--help]"
     echo
     echo " Client side Subversion sucks - there is very little customisability, which"
     echo " completely ruins the experience for a lot of users. This bundle of scripts wraps"
     echo " around the svn command line tool to provide the extra functionality that YOU want."
     echo 
-    echo " Common commands:"
-    echo "  -h, --help     Display this help information and exit."
-    echo "  -v, --version  Print the version number and exit."
+    echo "csvn options:"
+    echo "   --svn=<path>    Use path as Subversion executable."
+    exit 0
 }

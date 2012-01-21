@@ -40,7 +40,7 @@ for f in $(ls $CSVNROOT/lib/*.sh); do source "$f" \
     || { die "Error sourcing $f"; }; done
 
 # User didn't supply any arguments? Help them!
-test ! $# -eq 0 || { usage; exit 0; }
+test ! $# -eq 0 || usage
 
 # First, look for csvn options - these are few.
 # When adding more options to csvn, make to that it sets csvn_opts_on
@@ -49,13 +49,15 @@ test ! $# -eq 0 || { usage; exit 0; }
 csvn_opts_on=false
 while test "${1+isset}"; do
     case "$1" in
-	--svn)
-	    test ! "${2+isset}" -o "$2" = "--" && die "--svn requires a path argument"
-	    # TODO: Test that $2 is executable
-	    SVN="$2"
-	    shift
-	    shift
+	--svn=*)
+	    SVN=$(echo "$1" | sed -n 's/^--svn=\(..*\)$/\1/p')
+
+	    test ! -z "$SVN" || die "--svn requires a path argument"
+
+	    #TODO: Test that $2 is executable
+
 	    csvn_opts_on=true
+	    exit
 	    ;;
 	--)
 	    shift
@@ -63,10 +65,9 @@ while test "${1+isset}"; do
 	    ;;
 	--help|-h|help)
 	    usage
-	    exit 0
 	    ;;
 	-v|--version)
-	    echo "$CSVN $MAJOR.$MINOR.$REV"
+	    echo "$CSVN version $MAJOR.$MINOR.$REV"
 	    exit 0
 	    ;;
 	*)
