@@ -46,14 +46,12 @@ elif test -n "${VISUAL:+x}"; then
     ED="$VISUAL"
 elif test -n "${EDITOR:+x}"; then
     ED="$EDITOR"
-else
-    echo "Using default editor"
 fi
 
 $ED $2 # TODO: Allow variable editor
 
 # Check commit message
-if test -f "$CSVNROOT/hooks/commit-msg"; then
+if test -x "$CSVNROOT/hooks/commit-msg"; then
     $CSVNROOT/hooks/commit-msg $2
-    test $? -eq 0 || die
+    test $? -eq 0 || die "commit-msg hook failed"
 fi

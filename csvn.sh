@@ -87,14 +87,14 @@ dosvn() {
 	    shift 		# Get rid of 'commit'
 
 	    # Pre-commit
-	    if test -f "$CSVNROOT/hooks/pre-commit"; then
+	    if test -x "$CSVNROOT/hooks/pre-commit"; then
 		$CSVNROOT/hooks/pre-commit || die
 	    fi
 
 	    docommit "$@"
 
 	    # Post commit
-	    if test $? -eq 0 -a -f "$CSVNROOT/hooks/post-commit"; then
+	    if test $? -eq 0 -a -x "$CSVNROOT/hooks/post-commit"; then
 		$CSVNROOT/hooks/post-commit
 	    fi
 

@@ -57,7 +57,7 @@ docommit() {
     # Temporary to hold the commit message
     TMP=`mktemp`
 
-    if test -f "$CSVNROOT/hooks/prepare-commit-msg"; then
+    if test -x "$CSVNROOT/hooks/prepare-commit-msg"; then
 	$CSVNROOT/hooks/prepare-commit-msg "$TMP" ${nargs[*]} || die "prepare-commit-msg failed"
     fi
 
