@@ -32,8 +32,8 @@ export CSVNROOT=$(dirname "$0")
 export CSVN=$(basename "$0")
 
 MAJOR=0
-MINOR=1
-REV=2
+MINOR=2
+REV=0
 
 # Source lib directory
 for f in $(ls $CSVNROOT/lib/*.sh); do source "$f" \
